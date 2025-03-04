@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Belt Schools API</title>
+
+    <style>
+        /* CSS styles for the document*/
+        body{
+            background-image: url('wiw.jpg'); 
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Body section containing the content of the webpage -->
+    <link rel="stylesheet" href="EYYPIAYSHISH.css">
+    <!-- Links an external CSS stylesheet for additional styling -->
+
+
+    <h2>University Belt</h2> 
+     <!-- Heading level 2 for the title "University Belt" -->
+    <p>Discover your School</p>
+    <!-- Paragraph prompting users to discover their school -->
+    
+    <input type="text" id="schoolInput" placeholder="Enter school name...">
+    <!-- Text input field for entering the school name -->
+    <button onclick="searchSchool()">Search</button>
+    <!-- Button that triggers the searchSchool function when clicked -->
+
+    <div id="result"></div>
+    <!-- Div element where search results will be displayed -->
+
+    <p id="schoolAddress" style="display:none;">Address: [Insert School Address Here</p>
+    <!-- Paragraph for displaying the school's address, initially hidden -->
+
+    <script>
+        // Sample Data: Schools with acronyms, courses & tuition fees
+        const schools = {
+            "Far Eastern University ": {
+                acronym: "FEU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱50,000 - ₱80,000 per semester",
+                address: "Nicanor Reyes St, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "University of the East Manila ": {
+                acronym: "UE",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "2219 Recto Ave, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "San Beda University ": {
+                acronym: "SBU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱60,000 - ₱100,000 per semester",
+                address: "638 Mendiola St, San Miguel, Manila, 1005 Metro Manila"
+            },
+            "University of the Philippines Manila ": {
+                acronym: "UP Manila",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "No tuition fee (Scholar School)",
+                address: "670 Padre Faura St, Ermita, Manila, 1000 Metro Manila"
+            },
+            "Polytechnic University of the Philippines ": {
+                acronym: "PUP",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "No tuition fee (Scholar School)",
+                address: "1016 Anonas, Santa Mesa, Maynila, Kalakhang Maynila"
+            },
+            "Technological University of the Philippines ": {
+                acronym: "TUP",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "No tuition fee (Scholar School)",
+                address: "San Marcelino St, Ayala Blvd, Ermita, Manila, 1000"
+            },
+            "Mapúa University ": {
+                acronym: "MU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱70,000 - ₱90,000 per semester",
+                address: "658 Muralla St, Intramuros, Manila, 1002 Metro Manila"
+            },
+            "Lyceum of the Philippines University Manila ": {
+                acronym: "LPU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱50,000 - ₱75,000 per semester",
+                address: "Muralla Corner Real Streets, Intramuros, 1002 Manila"
+            },
+            "Arellano University ": {
+                acronym: "AU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱60,000 per semester",
+                address: "2600 Legarda St., Sampaloc, Manila, Philippines"
+            },
+            "University of Santo Tomas ": {
+                acronym: "UST",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱80,000 - ₱120,000 per semester",
+                address: "España Blvd, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "Adamson University ": {
+                acronym: "AdU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱50,000 - ₱70,000 per semester",
+                address: "900 San Marcelino St, Ermita, Manila, 1000 Metro Manila"
+            },
+            "Philippine Normal University ": {
+                acronym: "PNU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱20,000 - ₱40,000 per semester",
+                address: "104 Taft Ave, Ermita, Manila, 1000 Metro Manila"
+            },
+            "Manila Central University ": {
+                acronym: "MCU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱60,000 - ₱90,000 per semester",
+                address: "Epifanio de los Santos Ave, Morning Breeze Subdivision, Caloocan, 1400 Metro Manila"
+            },
+            "Philippine Christian University ": {
+                acronym: "PCU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "1648 Taft Ave, Malate, Manila, 1004 Metro Manila"
+            },
+            "Emilio Aguinaldo College ": {
+                acronym: "EAC",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱50,000 - ₱80,000 per semester",
+                address: "1113 San Marcelino St, Paco, Manila, Metro Manila"
+            },
+            "University of Manila ": {
+                acronym: "UM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "546 Delos Santos St, 403, Manila, 1008 Metro Manila"
+            },
+            "National Teachers College ": {
+                acronym: "NTC",
+                courses: ["Education", "Business Administration", "Information Technology", "Criminology"],
+                tuition: "₱20,000 - ₱40,000 per semester",
+                address: "629 J Nepomuceno, Quiapo, Manila, 1001 Metro Manila"
+            },
+            "University of the Philippines Diliman ": {
+                acronym: "UP Diliman",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "No tuition fee (Scholar School)",
+                address: "M339+HC2, Roxas Ave, Diliman, Quezon City, Metro Manila"
+            },
+            "Manila Tytana Colleges ": {
+                acronym: "MTC",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "Metropolitan Park, President, Diosdado Macapagal Blvd, Pasay, 1300 Metro Manila"
+            },
+            "De la Salle University ": {
+                acronym: "DLSU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱80,000 - ₱120,000 per semester",
+                address: "2401 Taft Ave, Malate, Manila, 1004 Metro Manila"
+            },
+            "St. Paul University Manila ": {
+                acronym: "SPUM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "680 Pedro Gil St, Malate, Manila, 1004 Metro Manila"
+            },
+            "Centro Escolar University ": {
+                acronym: "CEU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "9 Mendiola Street, San Miguel, Manila City, 1005"
+            },
+            "Ateneo de Manila University ": {
+                acronym: "ADMU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱80,000 - ₱120,000 per semester",
+                address: "Katipunan Ave, Quezon City, 1108 Metro Manila"
+            },
+            "Colegio de San Juan de Letran ": {
+                acronym: "CSJL",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱50,000 - ₱80,000 per semester",
+                address: "151 Muralla Street, Intramuros, Manila 1002, Philippines"
+            },
+            "FEATI University ": {
+                acronym: "FEATI",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "Helios St., Sta. Cruz, Manila 1003, Philippines"
+            },
+            "Manuel L. Quezon University ": {
+                acronym: "MLQU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "790 Epifanio de los Santos Ave, Diliman, Quezon City, 1103 Metro Manila"
+            },
+            "Eulogio Amang Rodriguez Institute of Science and Technology ": {
+                acronym: "EARIST",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "No tuition fee (Scholar School)",
+                address: "H2X2+JG2, Nagtahan St, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "National University Manila ": {
+                acronym: "NU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "551 F Jhocson St, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "College of the Holy Spirit Manila ": {
+                acronym: "CHSM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "HXWV+XR8, Mendiola St, San Miguel, Manila, 1008 Metro Manila"
+            },
+            "De Ocampo Memorial College ": {
+                acronym: "DOMC",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱20,000 - ₱40,000 per semester",
+                address: "3222 Magsaysay Blvd, Santa Mesa, Manila, 1016 Metro Manila"
+            },
+            "La Consolacion College Manila ": {
+                acronym: "LCC",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "8 Mendiola St, San Miguel, Manila, 1005 Metro Manila"
+            },
+            "Perpetual Help College of Manila ": {
+                acronym: "PHCM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "1240 Concepcion St, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "Philippine School of Business Administration ": {
+                acronym: "PSBA",
+                courses: ["Business Administration", "Information Technology", "Education", "Criminology"],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "1029, Aurora Blvd, Lungsod Quezon, Kalakhang Maynila, 826 R. Papa, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "PMI Colleges formerly Philippine Maritime Institute ": {
+                acronym: "PMI",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "419 Burke St, Binondo, Manila, 1006 Metro Manila"
+            },
+            "San Sebastian College Recoletos de Manila ": {
+                acronym: "SSC-R",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "2114-A Recto Avenue, Manila, NCR, Philippines"
+            },
+            "Philippine College of Health Sciences, Inc. ": {
+                acronym: "PCHS",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "1813 Recto Ave, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "University of Manila ": {
+                acronym: "UM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "546 Mariano V. delos Santos Street, Sampaloc, Manila, Philippines 1008"
+            },
+            "Mary Chiles College ": {
+                acronym: "MCC",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "667 Dalupan St, Sampaloc, Manila, 1008 Metro Manila"
+            },
+            "De La Salle-College of Saint Benilde ": {
+                acronym: "DLS-CSB",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱80,000 - ₱120,000 per semester",
+                address: "2544 Taft Avenue, Malate, Manila, 1004 Metro Manila, Philippines"
+            },
+            "Philippine Christian University ": {
+                acronym: "PCU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "1648 Taft Ave, Malate, Manila, 1004 Metro Manila"
+            },
+            "Philippine Women's University ": {
+                acronym: "PWU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "1743 Taft Ave, Malate, Manila, 1004 Metro Manila"
+            },
+            "Philippine Normal University ": {
+                acronym: "PNU",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱20,000 - ₱40,000 per semester",
+                address: "1000 Taft Ave., Ermita, Manila, Philippines"
+            },
+            "Saint Paul University Manila ": {
+                acronym: "SPUM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "680 Pedro Gil St., Malate, Manila, Philippines"
+            },
+            "St. Scholastica's College Manila ": {
+                acronym: "SSC",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱40,000 - ₱70,000 per semester",
+                address: "2560 Leon Guinto Street, Singalong, Malate, Manila, Philippines 1004"
+            },	
+            "Universidad de Manila ": {
+                acronym: "UDM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "659-A Cecilia Muñoz St, Ermita, Manila, 1000 Metro Manila"
+            },
+            "Mapúa Institute of Technology ": {
+                acronym: "MIT",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱70,000 - ₱90,000 per semester",
+                address: "Muralla St, Intramuros, Manila, 1002 Metro Manila"
+            },	
+            "Pamantasan ng Lungsod ng Maynila ": {
+                acronym: "PLM",
+                courses: ["Bachelor of Science in Accountancy", "Bachelor of Science in Business Administration", "Bachelor of Science in Business Economics", "Bachelor of Science in Internal Auditing", "Bachelor of Science in Human Resource and Organizational Development","Bachelor of Science in Architecture","Bachelor of Fine Arts major in Studio Arts",
+                    "Bachelor of Fine Arts major in Visual Communication", "Bachelor of Science in Applied Mathematics", "Bachelor of Science in Biology", "Bachelor of Science in Chemistry", "Bachelor of Arts in Communication", "Bachelor of Arts in International Studies", "Bachelor of Arts in Language and Literature Studies", "Bachelor of Arts in Interdisciplinary Studies", "Bachelor of Arts in Political Science", "Bachelor of Science in Psychology", "Bachelor of Elementary Education", "Bachelor of Secondary Education major in English", "Bachelor of Secondary Education major in Mathematics", "Bachelor of Secondary Education major in Science", "Bachelor of Special Needs Education", "Bachelor of Science in Exercise and Sports Sciences major in Fitness and Sports Management", "Bachelor of Physical Education", "Bachelor of Science in Nursing", "Bachelor of Science in Medical Technology", "Bachelor of Science in Nutrition Dietetics", "Bachelor of Science in Pharmacy", "Bachelor of Science in Hospitality Management", "Bachelor of Science in Tourism Management"
+                ],
+                tuition: "₱30,000 - ₱50,000 per semester",
+                address: "General Luna, corner Muralla St, Intramuros, Manila, 1002 Metro Manila",
+            },
+        };
+
+        // Search function (case-insensitive)
+        function searchSchool() {
+    const input = document.getElementById("schoolInput").value.trim().toLowerCase();
+    // Gets the input value, trims whitespace, and converts it to lowercase
+    const resultDiv = document.getElementById("result");
+    const addressDiv = document.getElementById("schoolAddress");
+    // Gets references to the result and address display elements
+    
+    let foundSchool = null;
+    for (let school in schools) {
+        // Loop through each school in the schools object
+        if (school.toLowerCase().includes(input) || schools[school].acronym.toLowerCase() === input) {
+            // Checks if the entered name matches the school name or acronym
+            foundSchool = school;
+            // Store the found school
+            break; // Exit the loop
+        }
+    }
+
+    if (foundSchool) { // If a school was found
+        const { acronym, courses, tuition, address } = schools[foundSchool]; // Destructure the school data
+        resultDiv.innerHTML = `<strong>${foundSchool} (${acronym})</strong> offers: <ul>${courses.map(course => `<li>${course}</li>`).join("")}</ul> <p><strong>Tuition:</strong> ${tuition}</p>`;
+        // Display school name, acronym, courses, and tuition in the result div
+        addressDiv.innerHTML = `<strong>Address:</strong> ${address}`; // Display the address
+        addressDiv.style.display = 'block'; // Show the address
+    } else {
+        resultDiv.innerHTML = "School not found."; // Display an error message
+    }
+}
+        // Enable searching when pressing Enter
+        document.getElementById("schoolInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                searchSchool(); // Call searchSchool function on Enter key press
+            }
+        });
+    </script>
+
+</body>
+</html>
